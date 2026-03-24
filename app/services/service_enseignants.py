@@ -1,8 +1,3 @@
-# ─────────────────────────────────────────────────────────────
-#  Service Enseignants — toute la logique métier ici
-#  Stockage en mémoire (listes Python, pas de base de données)
-# ─────────────────────────────────────────────────────────────
-
 liste_enseignants = []
 _prochain_id = 1
 
