@@ -1,8 +1,3 @@
-# ─────────────────────────────────────────────────────────────
-#  Service Cours — toute la logique métier ici
-#  Collabore avec service_etudiants et service_enseignants
-#  Stockage en mémoire (listes Python, pas de base de données)
-# ─────────────────────────────────────────────────────────────
 
 from app.services import service_etudiants, service_enseignants
 
@@ -29,7 +24,7 @@ def inscrire_etudiant_au_cours(identifiant_cours, identifiant_etudiant):
     for cours in liste_cours:
         if cours['id'] == identifiant_cours:
             if identifiant_etudiant in cours['identifiants_etudiants']:
-                return False  # déjà inscrit
+                return False  
             cours['identifiants_etudiants'].append(identifiant_etudiant)
             return True
     return False
