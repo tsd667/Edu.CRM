@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block titre %}Étudiants — Edu.CRM{% endblock %}
+
+{% block contenu %}
+<div class="conteneur">
+  <div class="entete-page">
+    <div>
+      <h1><span class="icone-titre">🎓</span> Étudiants</h1>
+      <div class="sous-titre">Gestion des étudiants inscrits</div>
+    </div>
+    {% if session.get('role') == 'admin' %}
+    <a href="{{ url_for('etudiants.creer') }}" class="btn btn-principal">+ Ajouter un étudiant</a>
+    {% endif %}
+  </div>
+
+  <div class="carte">
+    <div class="carte-entete">
+      <span class="carte-entete-titre">Liste des étudiants</span>
+      <span class="carte-entete-compteur">{{ etudiants | length }} résultat(s)</span>
+    </div>
+
+    <!-- Barre de recherche -->
+    <form method="GET" action="{{ url_for('etudiants.liste') }}" class="barre-recherche">
+      <input type="text" name="recherche" placeholder="🔍 Rechercher par nom..."
+             value="{{ mot_cle }}">
+      <button type="submit" class="btn btn-principal btn-petit">Rechercher</button>
+      {% if mot_cle %}
+        <a href="{{ url_for('etudiants.liste') }}" class="btn btn-retour btn-petit">✕ Effacer</a>
+      {% endif %}
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nom complet</th>
+          <th>Adresse e-mail</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if etudiants %}
+          {% for etudiant in etudiants %}
+          <tr>
+            <td><span class="badge badge-vert">{{ etudiant.id }}</span></td>
+            <td><strong>{{ etudiant.nom }}</strong></td>
+            <td style="color:var(--texte-leger); font-family:var(--police-code); font-size:0.85rem;">
+              {{ etudiant.email }}
+            </td>
+            <td>
+              {% if session.get('role') == 'admin' %}
+              <a href="{{ url_for('etudiants.modifier', identifiant=etudiant.id) }}"
+                 class="btn btn-info btn-petit">✏ Modifier</a>
+              <a href="{{ url_for('etudiants.supprimer', identifiant=etudiant.id) }}"
+                 class="btn btn-danger btn-petit"
+                 onclick="return confirm('Supprimer {{ etudiant.nom }} ?')">✕ Supprimer</a>
+              {% else %}
+              <span class="badge badge-gris">Lecture seule</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr class="ligne-vide">
+            <td colspan="4">
+              {% if mot_cle %}
+                Aucun étudiant trouvé pour « {{ mot_cle }} ».
+              {% else %}
+                Aucun étudiant enregistré — commencez par en ajouter un.
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

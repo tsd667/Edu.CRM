@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block titre %}Enseignants — Edu.CRM{% endblock %}
+
+{% block contenu %}
+<div class="conteneur">
+  <div class="entete-page">
+    <div>
+      <h1><span class="icone-titre">👨‍🏫</span> Enseignants</h1>
+      <div class="sous-titre">Gestion du corps enseignant</div>
+    </div>
+    {% if session.get('role') == 'admin' %}
+    <a href="{{ url_for('enseignants.creer') }}" class="btn btn-principal">+ Ajouter un enseignant</a>
+    {% endif %}
+  </div>
+
+  <div class="carte">
+    <div class="carte-entete">
+      <span class="carte-entete-titre">Liste des enseignants</span>
+      <span class="carte-entete-compteur">{{ enseignants | length }} résultat(s)</span>
+    </div>
+
+    <!-- Barre de recherche -->
+    <form method="GET" action="{{ url_for('enseignants.liste') }}" class="barre-recherche">
+      <input type="text" name="recherche" placeholder="🔍 Rechercher par nom..."
+             value="{{ mot_cle }}">
+      <button type="submit" class="btn btn-principal btn-petit">Rechercher</button>
+      {% if mot_cle %}
+        <a href="{{ url_for('enseignants.liste') }}" class="btn btn-retour btn-petit">✕ Effacer</a>
+      {% endif %}
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nom complet</th>
+          <th>Adresse e-mail</th>
+          <th>Spécialité</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if enseignants %}
+          {% for enseignant in enseignants %}
+          <tr>
+            <td><span class="badge badge-or">{{ enseignant.id }}</span></td>
+            <td><strong>{{ enseignant.nom }}</strong></td>
+            <td style="color:var(--texte-leger); font-family:var(--police-code); font-size:0.85rem;">
+              {{ enseignant.email }}
+            </td>
+            <td><span class="badge badge-bleu">{{ enseignant.specialite }}</span></td>
+            <td>
+              {% if session.get('role') == 'admin' %}
+              <a href="{{ url_for('enseignants.modifier', identifiant=enseignant.id) }}"
+                 class="btn btn-info btn-petit">✏ Modifier</a>
+              <a href="{{ url_for('enseignants.supprimer', identifiant=enseignant.id) }}"
+                 class="btn btn-danger btn-petit"
+                 onclick="return confirm('Supprimer {{ enseignant.nom }} ?')">✕ Supprimer</a>
+              {% else %}
+              <span class="badge badge-gris">Lecture seule</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr class="ligne-vide">
+            <td colspan="5">
+              {% if mot_cle %}
+                Aucun enseignant trouvé pour « {{ mot_cle }} ».
+              {% else %}
+                Aucun enseignant enregistré — commencez par en ajouter un.
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

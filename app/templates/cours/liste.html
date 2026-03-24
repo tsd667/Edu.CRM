@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block titre %}Cours — Edu.CRM{% endblock %}
+
+{% block contenu %}
+<div class="conteneur">
+  <div class="entete-page">
+    <div>
+      <h1><span class="icone-titre">📚</span> Cours</h1>
+      <div class="sous-titre">Gestion des cours et des inscriptions</div>
+    </div>
+    {% if session.get('role') == 'admin' %}
+    <a href="{{ url_for('cours.creer') }}" class="btn btn-principal">+ Créer un cours</a>
+    {% endif %}
+  </div>
+
+  <div class="carte">
+    <div class="carte-entete">
+      <span class="carte-entete-titre">Liste des cours</span>
+      <span class="carte-entete-compteur">{{ cours | length }} résultat(s)</span>
+    </div>
+
+    <!-- Filtre par enseignant -->
+    <form method="GET" action="{{ url_for('cours.liste') }}" class="barre-recherche">
+      <select name="enseignant">
+        <option value="">— Filtrer par enseignant —</option>
+        {% for enseignant in enseignants %}
+          <option value="{{ enseignant.id }}"
+            {% if filtre_enseignant == enseignant.id | string %}selected{% endif %}>
+            {{ enseignant.nom }}
+          </option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-principal btn-petit">Filtrer</button>
+      {% if filtre_enseignant %}
+        <a href="{{ url_for('cours.liste') }}" class="btn btn-retour btn-petit">✕ Réinitialiser</a>
+      {% endif %}
+    </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Titre du cours</th>
+          <th>Enseignant</th>
+          <th>Inscrits</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if cours %}
+          {% for c in cours %}
+          <tr>
+            <td><span class="badge badge-bleu">{{ c.id }}</span></td>
+            <td>
+              <a href="{{ url_for('cours.details', identifiant=c.id) }}"
+                 style="color:var(--vert-moyen); text-decoration:none; font-weight:600;">
+                {{ c.titre }}
+              </a>
+            </td>
+            <td style="color:var(--texte-leger);">{{ c.nom_enseignant }}</td>
+            <td>
+              <span class="badge {% if c.etudiants_inscrits %}badge-vert{% else %}badge-gris{% endif %}">
+                {{ c.etudiants_inscrits | length }} étudiant(s)
+              </span>
+            </td>
+            <td style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <a href="{{ url_for('cours.details', identifiant=c.id) }}"
+                 class="btn btn-info btn-petit">👁 Détails</a>
+              {% if session.get('role') == 'admin' %}
+              <a href="{{ url_for('cours.inscrire', identifiant_cours=c.id) }}"
+                 class="btn btn-or btn-petit">+ Inscrire</a>
+              <a href="{{ url_for('cours.modifier', identifiant=c.id) }}"
+                 class="btn btn-info btn-petit">✏</a>
+              <a href="{{ url_for('cours.supprimer', identifiant=c.id) }}"
+                 class="btn btn-danger btn-petit"
+                 onclick="return confirm('Supprimer le cours « {{ c.titre }} » ?')">✕</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr class="ligne-vide">
+            <td colspan="5">
+              {% if filtre_enseignant %}
+                Aucun cours trouvé pour cet enseignant.
+              {% else %}
+                Aucun cours enregistré — commencez par en créer un.
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

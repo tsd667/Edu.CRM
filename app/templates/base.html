@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block titre %}Edu.CRM{% endblock %}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+    /* ══════════════════════════════════════════════
+       VARIABLES & RESET
+    ══════════════════════════════════════════════ */
+    :root {
+      --vert-fonce:   #0d3d2e;
+      --vert-moyen:   #1a5c42;
+      --vert-clair:   #2e8b5e;
+      --vert-pale:    #d4edda;
+      --or:           #c8960c;
+      --or-pale:      #fdf3d0;
+      --rouge:        #c0392b;
+      --rouge-pale:   #fde8e8;
+      --bleu-info:    #1a4a7a;
+      --bleu-pale:    #dbeafe;
+      --fond:         #f4f1eb;
+      --fond-carte:   #fffef9;
+      --texte:        #1a1a1a;
+      --texte-doux:   #4a4a4a;
+      --texte-leger:  #7a7a7a;
+      --bordure:      #d0c8b8;
+      --bordure-forte:#a09080;
+      --ombre: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
+      --ombre-forte: 0 8px 30px rgba(0,0,0,0.12);
+      --rayon: 6px;
+      --police: 'IBM Plex Sans', sans-serif;
+      --police-code: 'IBM Plex Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--police);
+      background: var(--fond);
+      color: var(--texte);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════════════
+       BANDEAU SUPÉRIEUR
+    ══════════════════════════════════════════════ */
+    .bandeau-sup {
+      background: var(--vert-fonce);
+      color: rgba(255,255,255,0.6);
+      font-size: 0.72rem;
+      font-family: var(--police-code);
+      letter-spacing: 0.06em;
+      padding: 0.3rem 2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ══════════════════════════════════════════════
+       BARRE DE NAVIGATION
+    ══════════════════════════════════════════════ */
+    nav {
+      background: var(--vert-moyen);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 58px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .nav-marque {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .nav-marque-icone {
+      width: 34px;
+      height: 34px;
+      background: var(--or);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--vert-fonce);
+      font-family: var(--police-code);
+    }
+
+    .nav-marque-texte {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: white;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-marque-texte span {
+      color: var(--or);
+    }
+
+    .nav-liens {
+      display: flex;
+      gap: 0;
+      list-style: none;
+      height: 100%;
+      align-items: center;
+    }
+
+    .nav-liens a {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      padding: 0 1rem;
+      height: 58px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .nav-liens a:hover {
+      color: white;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .nav-liens a.actif {
+      color: white;
+      border-bottom-color: var(--or);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .nav-droite {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .badge-role {
+      font-family: var(--police-code);
+      font-size: 0.68rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .badge-role.admin      { background: var(--or);    color: var(--vert-fonce); }
+    .badge-role.utilisateur { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
+
+    .nav-utilisateur {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.85rem;
+    }
+
+    .lien-deconnexion {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 0.82rem;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: var(--rayon);
+      transition: all 0.2s;
+    }
+
+    .lien-deconnexion:hover {
+      background: rgba(255,255,255,0.12);
+      color: white;
+    }
+
+    /* ══════════════════════════════════════════════
+       MESSAGES FLASH
+    ══════════════════════════════════════════════ */
+    .zone-messages {
+      max-width: 1100px;
+      margin: 1.25rem auto 0;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .message-flash {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.8rem 1.1rem;
+      border-radius: var(--rayon);
+      border: 1px solid;
+      font-size: 0.9rem;
+    }
+
+    .message-flash.succes   { background: var(--vert-pale); border-color: #6abf8a; color: #1a4a2e; }
+    .message-flash.danger   { background: var(--rouge-pale); border-color: #e8a0a0; color: #7a1a1a; }
+    .message-flash.attention { background: var(--or-pale); border-color: #e0c060; color: #5a3e00; }
+    .message-flash.info     { background: var(--bleu-pale); border-color: #90b8e0; color: #1a3a5a; }
+
+    .message-flash::before {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .message-flash.succes::before   { content: '✓'; }
+    .message-flash.danger::before   { content: '✕'; }
+    .message-flash.attention::before { content: '⚠'; }
+    .message-flash.info::before     { content: 'ℹ'; }
+
+    /* ══════════════════════════════════════════════
+       CONTENEUR PRINCIPAL
+    ══════════════════════════════════════════════ */
+    .conteneur {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 2rem 4rem;
+    }
+
+    /* ══════════════════════════════════════════════
+       EN-TÊTE DE PAGE
+    ══════════════════════════════════════════════ */
+    .entete-page {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--bordure);
+    }
+
+    .entete-page h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--vert-fonce);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .entete-page h1 .icone-titre {
+      font-size: 1.3rem;
+    }
+
+    .entete-page .sous-titre {
+      font-size: 0.85rem;
+      color: var(--texte-leger);
+      margin-top: 0.2rem;
+      font-weight: 400;
+    }
+
+    /* ══════════════════════════════════════════════
+       CARTE
+    ══════════════════════════════════════════════ */
+    .carte {
+      background: var(--fond-carte);
+      border: 1px solid var(--bordure);
+      border-radius: var(--rayon);
+      box-shadow: var(--ombre);
+      overflow: hidden;
+    }
+
+    .carte-entete {
+      background: linear-gradient(135deg, var(--vert-fonce), var(--vert-moyen));
+      padding: 0.9rem 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .carte-entete-titre {
+      color: white;
+      font-size: 0.82rem;
+      font-family: var(--police-code);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .carte-entete-compteur {
+      background: var(--or);
+      color: var(--vert-fonce);
+      font-family: var(--police-code);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+    }
+
+    /* ══════════════════════════════════════════════
+       BARRE DE RECHERCHE
+    ══════════════════════════════════════════════ */
+    .barre-recherche {
+      padding: 0.9rem 1.4rem;
+      background: #f8f6f0;
+      border-bottom: 1px solid var(--bordure);
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .barre-recherche input {
+      flex: 1;
+      padding: 0.5rem 0.9rem;
+      border: 1px solid var(--bordure-forte);
+      border-radius: var(--rayon);
+      font-family: var(--police);
+      font-size: 0.88rem;
+      background: white;
+      color: var(--texte);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .barre-recherche input:focus { border-color: var(--vert-clair); }
+
+    .barre-recherche select {
+      padding: 0.5rem 0.9rem;
+      border: 1px solid var(--bordure-forte);
+      border-radius: var(--rayon);
+      font-family: var(--police);
+      font-size: 0.88rem;
+      background: white;
+      color: var(--texte);
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* ══════════════════════════════════════════════
+       TABLEAU
+    ══════════════════════════════════════════════ */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: #f0ece2;
+      border-bottom: 2px solid var(--bordure-forte);
+    }
+
+    th {
+      padding: 0.75rem 1.25rem;
+      text-align: left;
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--texte-leger);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--bordure);
+      font-size: 0.9rem;
+      color: var(--texte);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #faf8f2; }
+
+    .ligne-vide td {
+      text-align: center;
+      color: var(--texte-leger);
+      padding: 3rem;
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+
+    /* ══════════════════════════════════════════════
+       BOUTONS
+    ══════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.48rem 1rem;
+      border-radius: var(--rayon);
+      font-family: var(--police);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+
+    .btn-principal {
+      background: var(--vert-moyen);
+      color: white;
+      border-color: var(--vert-moyen);
+    }
+    .btn-principal:hover { background: var(--vert-fonce); border-color: var(--vert-fonce); }
+
+    .btn-or {
+      background: var(--or);
+      color: var(--vert-fonce);
+      border-color: var(--or);
+      font-weight: 600;
+    }
+    .btn-or:hover { background: #b8860a; border-color: #b8860a; color: white; }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--rouge);
+      border-color: var(--rouge);
+    }
+    .btn-danger:hover { background: var(--rouge); color: white; }
+
+    .btn-retour {
+      background: #f0ece2;
+      color: var(--texte-doux);
+      border-color: var(--bordure-forte);
+    }
+    .btn-retour:hover { background: #e4dfd0; }
+
+    .btn-info {
+      background: var(--bleu-info);
+      color: white;
+      border-color: var(--bleu-info);
+    }
+    .btn-info:hover { opacity: 0.88; }
+
+    .btn-petit { padding: 0.3rem 0.7rem; font-size: 0.78rem; }
+
+    /* ══════════════════════════════════════════════
+       FORMULAIRE
+    ══════════════════════════════════════════════ */
+    .carte-formulaire {
+      background: var(--fond-carte);
+      border: 1px solid var(--bordure);
+      border-radius: var(--rayon);
+      box-shadow: var(--ombre);
+      max-width: 560px;
+      overflow: hidden;
+    }
+
+    .carte-formulaire .carte-entete { margin-bottom: 0; }
+
+    .corps-formulaire { padding: 1.75rem; }
+
+    .groupe-champ { margin-bottom: 1.25rem; }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--texte-doux);
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border: 1px solid var(--bordure-forte);
+      border-radius: var(--rayon);
+      font-family: var(--police);
+      font-size: 0.92rem;
+      color: var(--texte);
+      background: white;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--vert-clair);
+      box-shadow: 0 0 0 3px rgba(46,139,94,0.12);
+    }
+
+    .actions-formulaire {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--bordure);
+    }
+
+    /* ══════════════════════════════════════════════
+       BADGES
+    ══════════════════════════════════════════════ */
+    .badge {
+      display: inline-block;
+      font-family: var(--police-code);
+      font-size: 0.72rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 3px;
+      font-weight: 500;
+      border: 1px solid;
+    }
+
+    .badge-vert   { background: var(--vert-pale);  color: var(--vert-fonce); border-color: #8acc9a; }
+    .badge-or     { background: var(--or-pale);    color: #7a4e00;           border-color: #d0a830; }
+    .badge-bleu   { background: var(--bleu-pale);  color: var(--bleu-info);  border-color: #90b8e0; }
+    .badge-rouge  { background: var(--rouge-pale); color: var(--rouge);      border-color: #e8a0a0; }
+    .badge-gris   { background: #eeebe4;           color: var(--texte-leger); border-color: var(--bordure); }
+
+    /* ══════════════════════════════════════════════
+       CARTES STATS (DASHBOARD)
+    ══════════════════════════════════════════════ */
+    .grille-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .carte-stat {
+      background: var(--fond-carte);
+      border: 1px solid var(--bordure);
+      border-radius: var(--rayon);
+      box-shadow: var(--ombre);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .carte-stat::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+
+    .carte-stat.verte::before  { background: var(--vert-clair); }
+    .carte-stat.or::before     { background: var(--or); }
+    .carte-stat.bleue::before  { background: var(--bleu-info); }
+
+    .stat-icone {
+      font-size: 1.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .stat-valeur {
+      font-size: 2.8rem;
+      font-weight: 700;
+      font-family: var(--police-code);
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+
+    .carte-stat.verte .stat-valeur  { color: var(--vert-clair); }
+    .carte-stat.or .stat-valeur     { color: var(--or); }
+    .carte-stat.bleue .stat-valeur  { color: var(--bleu-info); }
+
+    .stat-libelle {
+      font-size: 0.82rem;
+      color: var(--texte-leger);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ══════════════════════════════════════════════
+       GRAPHIQUE BARRES (CSS pur)
+    ══════════════════════════════════════════════ */
+    .graphique {
+      background: var(--fond-carte);
+      border: 1px solid var(--bordure);
+      border-radius: var(--rayon);
+      box-shadow: var(--ombre);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .graphique-titre {
+      font-size: 0.82rem;
+      color: var(--texte-leger);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.25rem;
+      font-family: var(--police-code);
+    }
+
+    .graphique-barres {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .barre-ligne {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .barre-nom {
+      font-size: 0.82rem;
+      color: var(--texte-doux);
+      min-width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .barre-piste {
+      flex: 1;
+      height: 22px;
+      background: #eeebe4;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .barre-remplissage {
+      height: 100%;
+      background: linear-gradient(90deg, var(--vert-moyen), var(--vert-clair));
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      padding-right: 6px;
+      justify-content: flex-end;
+      transition: width 0.6s ease;
+      min-width: 4px;
+    }
+
+    .barre-nombre {
+      font-family: var(--police-code);
+      font-size: 0.72rem;
+      color: var(--texte-leger);
+      min-width: 25px;
+      text-align: right;
+    }
+
+    /* ══════════════════════════════════════════════
+       CARTE INFO (HIGHLIGHT)
+    ══════════════════════════════════════════════ */
+    .grille-infos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .carte-info {
+      background: var(--fond-carte);
+      border: 1px solid var(--bordure);
+      border-radius: var(--rayon);
+      box-shadow: var(--ombre);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .carte-info-titre {
+      font-size: 0.76rem;
+      color: var(--texte-leger);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+      font-family: var(--police-code);
+      border-bottom: 1px solid var(--bordure);
+      padding-bottom: 0.5rem;
+    }
+
+    .carte-info-valeur {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--vert-fonce);
+    }
+
+    .carte-info-details {
+      font-size: 0.82rem;
+      color: var(--texte-leger);
+      margin-top: 0.3rem;
+    }
+
+    /* ══════════════════════════════════════════════
+       PAGE CONNEXION
+    ══════════════════════════════════════════════ */
+    .page-connexion {
+      min-height: 100vh;
+      background: var(--vert-fonce);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 60px,
+          rgba(255,255,255,0.02) 60px,
+          rgba(255,255,255,0.02) 61px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 60px,
+          rgba(255,255,255,0.02) 60px,
+          rgba(255,255,255,0.02) 61px
+        );
+    }
+
+    .boite-connexion {
+      background: var(--fond-carte);
+      border: 1px solid var(--bordure);
+      border-radius: 10px;
+      box-shadow: var(--ombre-forte);
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+    }
+
+    .boite-connexion-entete {
+      background: linear-gradient(135deg, var(--vert-fonce), var(--vert-moyen));
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .boite-connexion-logo {
+      width: 56px;
+      height: 56px;
+      background: var(--or);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-family: var(--police-code);
+      font-weight: 700;
+      color: var(--vert-fonce);
+      margin: 0 auto 1rem;
+    }
+
+    .boite-connexion-entete h1 {
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    .boite-connexion-entete p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
+    .boite-connexion-corps { padding: 1.75rem 2rem 2rem; }
+
+    .boite-connexion-corps .btn { width: 100%; justify-content: center; padding: 0.65rem; }
+
+    .conseils-connexion {
+      background: var(--or-pale);
+      border: 1px solid #e0c060;
+      border-radius: var(--rayon);
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: #5a3e00;
+      margin-top: 1.25rem;
+      font-family: var(--police-code);
+    }
+
+    /* ══════════════════════════════════════════════
+       ETIQUETTE DE SECTION
+    ══════════════════════════════════════════════ */
+    .etiquette-section {
+      font-family: var(--police-code);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--texte-leger);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    /* ══════════════════════════════════════════════
+       PIED DE PAGE
+    ══════════════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--bordure);
+      background: var(--fond-carte);
+      padding: 0.9rem 2rem;
+      text-align: center;
+      font-size: 0.76rem;
+      color: var(--texte-leger);
+      font-family: var(--police-code);
+    }
+  </style>
+</head>
+<body>
+
+{% if session.get('utilisateur') %}
+<div class="bandeau-sup">
+  <span>SYSTÈME DE GESTION SCOLAIRE — EDU.CRM v2.0</span>
+  <span>Connecté : {{ session.get('utilisateur') }} · Rôle : {{ session.get('role') }}</span>
+</div>
+<nav>
+  <a href="{{ url_for('tableau_de_bord.index') }}" class="nav-marque">
+    <div class="nav-marque-icone">E</div>
+    <span class="nav-marque-texte">Edu.<span>CRM</span></span>
+  </a>
+
+  <ul class="nav-liens">
+    <li>
+      <a href="{{ url_for('tableau_de_bord.index') }}"
+         {% if request.endpoint == 'tableau_de_bord.index' %}class="actif"{% endif %}>
+        📊 Tableau de bord
+      </a>
+    </li>
+    <li>
+      <a href="{{ url_for('etudiants.liste') }}"
+         {% if request.blueprint == 'etudiants' %}class="actif"{% endif %}>
+        🎓 Étudiants
+      </a>
+    </li>
+    <li>
+      <a href="{{ url_for('enseignants.liste') }}"
+         {% if request.blueprint == 'enseignants' %}class="actif"{% endif %}>
+        👨‍🏫 Enseignants
+      </a>
+    </li>
+    <li>
+      <a href="{{ url_for('cours.liste') }}"
+         {% if request.blueprint == 'cours' %}class="actif"{% endif %}>
+        📚 Cours
+      </a>
+    </li>
+  </ul>
+
+  <div class="nav-droite">
+    <span class="badge-role {{ session.get('role') }}">{{ session.get('role') }}</span>
+    <span class="nav-utilisateur">{{ session.get('utilisateur') }}</span>
+    <a href="{{ url_for('auth.deconnexion') }}" class="lien-deconnexion">Déconnexion</a>
+  </div>
+</nav>
+{% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="zone-messages">
+      {% for categorie, message in messages %}
+        <div class="message-flash {{ categorie }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% block contenu %}{% endblock %}
+
+{% if session.get('utilisateur') %}
+<footer>
+  EDU.CRM · Système de gestion scolaire · Groupe 5 · 2024–2025
+</footer>
+{% endif %}
+
+</body>
+</html>

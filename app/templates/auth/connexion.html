@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titre %}Connexion — Edu.CRM{% endblock %}
+
+{% block contenu %}
+<div class="page-connexion">
+  <div class="boite-connexion">
+    <div class="boite-connexion-entete">
+      <div class="boite-connexion-logo">E</div>
+      <h1>Edu.CRM</h1>
+      <p>Système de gestion scolaire</p>
+    </div>
+
+    <div class="boite-connexion-corps">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for categorie, message in messages %}
+            <div class="message-flash {{ categorie }}" style="margin-bottom:1rem;">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('auth.connexion') }}">
+        <div class="groupe-champ">
+          <label for="nom_utilisateur">Nom d'utilisateur</label>
+          <input type="text" id="nom_utilisateur" name="nom_utilisateur"
+                 placeholder="Ex : admin" autocomplete="username" required>
+        </div>
+        <div class="groupe-champ">
+          <label for="mot_de_passe">Mot de passe</label>
+          <input type="password" id="mot_de_passe" name="mot_de_passe"
+                 placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn-principal">
+          → Se connecter
+        </button>
+      </form>
+
+      <div class="conseils-connexion">
+        admin / admin123 → accès complet (admin)<br>
+        etudiant / etudiant123 → accès lecture seule
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

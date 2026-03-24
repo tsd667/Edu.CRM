@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block titre %}
+  {% if mode == 'creer' %}Ajouter un étudiant{% else %}Modifier l'étudiant{% endif %} — Edu.CRM
+{% endblock %}
+
+{% block contenu %}
+<div class="conteneur">
+  <div class="entete-page">
+    <div>
+      <h1>
+        <span class="icone-titre">{% if mode == 'creer' %}➕{% else %}✏{% endif %}</span>
+        {% if mode == 'creer' %}Ajouter un étudiant{% else %}Modifier l'étudiant{% endif %}
+      </h1>
+      <div class="sous-titre">
+        {% if mode == 'creer' %}Saisir les informations du nouvel étudiant
+        {% else %}Mettre à jour les informations de {{ etudiant.nom }}
+        {% endif %}
+      </div>
+    </div>
+    <a href="{{ url_for('etudiants.liste') }}" class="btn btn-retour">← Retour à la liste</a>
+  </div>
+
+  <div class="carte-formulaire">
+    <div class="carte-entete">
+      <span class="carte-entete-titre">
+        {% if mode == 'creer' %}Nouveau dossier étudiant{% else %}Modification du dossier{% endif %}
+      </span>
+    </div>
+    <div class="corps-formulaire">
+      <form method="POST" action="
+        {% if mode == 'creer' %}{{ url_for('etudiants.creer') }}
+        {% else %}{{ url_for('etudiants.modifier', identifiant=etudiant.id) }}
+        {% endif %}">
+
+        <div class="groupe-champ">
+          <label for="nom">Nom complet</label>
+          <input type="text" id="nom" name="nom"
+                 placeholder="Ex : Moussa Diallo"
+                 value="{{ etudiant.nom if etudiant else '' }}"
+                 required>
+        </div>
+
+        <div class="groupe-champ">
+          <label for="email">Adresse e-mail</label>
+          <input type="email" id="email" name="email"
+                 placeholder="Ex : moussa.diallo@edu.sn"
+                 value="{{ etudiant.email if etudiant else '' }}"
+                 required>
+        </div>
+
+        <div class="actions-formulaire">
+          <button type="submit" class="btn btn-principal">
+            {% if mode == 'creer' %}✓ Enregistrer l'étudiant{% else %}✓ Sauvegarder les modifications{% endif %}
+          </button>
+          <a href="{{ url_for('etudiants.liste') }}" class="btn btn-retour">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

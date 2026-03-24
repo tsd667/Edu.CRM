@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block titre %}Tableau de bord — Edu.CRM{% endblock %}
+
+{% block contenu %}
+<div class="conteneur">
+  <div class="entete-page">
+    <div>
+      <h1><span class="icone-titre">📊</span> Tableau de bord</h1>
+      <div class="sous-titre">Vue d'ensemble du système scolaire</div>
+    </div>
+    <span style="font-family:var(--police-code); font-size:0.8rem; color:var(--texte-leger);">
+      Bienvenue, {{ session.get('utilisateur') }} 👋
+    </span>
+  </div>
+
+  <!-- Statistiques principales -->
+  <div class="grille-stats">
+    <div class="carte-stat verte">
+      <div class="stat-icone">🎓</div>
+      <div class="stat-valeur">{{ statistiques.nombre_etudiants }}</div>
+      <div class="stat-libelle">Étudiants inscrits</div>
+    </div>
+    <div class="carte-stat or">
+      <div class="stat-icone">👨‍🏫</div>
+      <div class="stat-valeur">{{ statistiques.nombre_enseignants }}</div>
+      <div class="stat-libelle">Enseignants actifs</div>
+    </div>
+    <div class="carte-stat bleue">
+      <div class="stat-icone">📚</div>
+      <div class="stat-valeur">{{ statistiques.nombre_cours }}</div>
+      <div class="stat-libelle">Cours disponibles</div>
+    </div>
+  </div>
+
+  <!-- Infos avancées -->
+  <div class="grille-infos">
+    <div class="carte-info">
+      <div class="carte-info-titre">🏆 Cours le plus populaire</div>
+      {% if cours_populaire %}
+        <div class="carte-info-valeur">{{ cours_populaire.titre }}</div>
+        <div class="carte-info-details">
+          {{ cours_populaire.nombre_inscrits }} étudiant(s) inscrit(s)
+          · Enseignant : {{ cours_populaire.enseignant.nom if cours_populaire.enseignant else 'N/A' }}
+        </div>
+      {% else %}
+        <div class="carte-info-details" style="font-style:italic;">Aucun cours enregistré.</div>
+      {% endif %}
+    </div>
+
+    <div class="carte-info">
+      <div class="carte-info-titre">⭐ Enseignant le plus actif</div>
+      {% if enseignant_actif %}
+        <div class="carte-info-valeur">{{ enseignant_actif.nom }}</div>
+        <div class="carte-info-details">
+          {{ enseignant_actif.nombre_cours }} cours assigné(s)
+          · Spécialité : {{ enseignant_actif.specialite }}
+        </div>
+      {% else %}
+        <div class="carte-info-details" style="font-style:italic;">Aucun enseignant enregistré.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Graphique inscriptions par cours -->
+  <div class="graphique">
+    <div class="graphique-titre">📈 Nombre d'étudiants par cours</div>
+    {% if donnees_graphique %}
+      {% set max_inscrits = donnees_graphique | map(attribute='nombre_inscrits') | max %}
+      <div class="graphique-barres">
+        {% for ligne in donnees_graphique %}
+          <div class="barre-ligne">
+            <div class="barre-nom" title="{{ ligne.titre }}">{{ ligne.titre }}</div>
+            <div class="barre-piste">
+              <div class="barre-remplissage"
+                   style="width: {{ ((ligne.nombre_inscrits / (max_inscrits if max_inscrits > 0 else 1)) * 100) | round }}%">
+              </div>
+            </div>
+            <div class="barre-nombre">{{ ligne.nombre_inscrits }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color:var(--texte-leger); font-style:italic; font-size:0.88rem;">
+        Aucune donnée à afficher — créez des cours et inscrivez des étudiants.
+      </p>
+    {% endif %}
+  </div>
+
+  <!-- Raccourcis -->
+  <div class="carte">
+    <div class="carte-entete">
+      <span class="carte-entete-titre">Accès rapide</span>
+    </div>
+    <div style="padding:1.25rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
+      <a href="{{ url_for('etudiants.liste') }}"     class="btn btn-principal">🎓 Gérer les étudiants</a>
+      <a href="{{ url_for('enseignants.liste') }}"   class="btn btn-or">👨‍🏫 Gérer les enseignants</a>
+      <a href="{{ url_for('cours.liste') }}"         class="btn btn-info">📚 Gérer les cours</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

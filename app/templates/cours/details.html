@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block titre %}{{ cours.titre }} — Edu.CRM{% endblock %}
+
+{% block contenu %}
+<div class="conteneur">
+  <div class="entete-page">
+    <div>
+      <span class="etiquette-section">Détails du cours</span>
+      <h1><span class="icone-titre">📖</span> {{ cours.titre }}</h1>
+      <div class="sous-titre">
+        Enseignant : <strong>{{ cours.enseignant.nom if cours.enseignant else 'Non assigné' }}</strong>
+        {% if cours.enseignant %}
+          · Spécialité : {{ cours.enseignant.specialite }}
+        {% endif %}
+      </div>
+    </div>
+    <a href="{{ url_for('cours.liste') }}" class="btn btn-retour">← Retour aux cours</a>
+  </div>
+
+  <!-- Résumé du cours -->
+  <div class="grille-infos" style="margin-bottom:1.5rem;">
+    <div class="carte-info">
+      <div class="carte-info-titre">📋 Informations générales</div>
+      <div class="carte-info-valeur">{{ cours.titre }}</div>
+      <div class="carte-info-details">
+        Identifiant : <span style="font-family:var(--police-code);">#{{ cours.id }}</span>
+      </div>
+    </div>
+    <div class="carte-info">
+      <div class="carte-info-titre">👨‍🏫 Enseignant responsable</div>
+      {% if cours.enseignant %}
+        <div class="carte-info-valeur">{{ cours.enseignant.nom }}</div>
+        <div class="carte-info-details">
+          {{ cours.enseignant.email }}<br>
+          Spécialité : {{ cours.enseignant.specialite }}
+        </div>
+      {% else %}
+        <div class="carte-info-details" style="font-style:italic;">Non assigné</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Liste des étudiants inscrits -->
+  <div class="carte">
+    <div class="carte-entete">
+      <span class="carte-entete-titre">Étudiants inscrits à ce cours</span>
+      <span class="carte-entete-compteur">{{ cours.nombre_inscrits }} inscrit(s)</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nom de l'étudiant</th>
+          <th>Adresse e-mail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if cours.etudiants_inscrits %}
+          {% for etudiant in cours.etudiants_inscrits %}
+          <tr>
+            <td><span class="badge badge-vert">{{ etudiant.id }}</span></td>
+            <td><strong>{{ etudiant.nom }}</strong></td>
+            <td style="color:var(--texte-leger); font-family:var(--police-code); font-size:0.85rem;">
+              {{ etudiant.email }}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr class="ligne-vide">
+            <td colspan="3">Aucun étudiant inscrit à ce cours pour le moment.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if session.get('role') == 'admin' %}
+  <div style="margin-top:1.25rem; display:flex; gap:0.75rem;">
+    <a href="{{ url_for('cours.inscrire', identifiant_cours=cours.id) }}"
+       class="btn btn-or">+ Inscrire un étudiant</a>
+    <a href="{{ url_for('cours.modifier', identifiant=cours.id) }}"
+       class="btn btn-info">✏ Modifier ce cours</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

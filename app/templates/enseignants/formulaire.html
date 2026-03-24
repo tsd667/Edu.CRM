@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block titre %}
+  {% if mode == 'creer' %}Ajouter un enseignant{% else %}Modifier l'enseignant{% endif %} — Edu.CRM
+{% endblock %}
+
+{% block contenu %}
+<div class="conteneur">
+  <div class="entete-page">
+    <div>
+      <h1>
+        <span class="icone-titre">{% if mode == 'creer' %}➕{% else %}✏{% endif %}</span>
+        {% if mode == 'creer' %}Ajouter un enseignant{% else %}Modifier l'enseignant{% endif %}
+      </h1>
+      <div class="sous-titre">
+        {% if mode == 'creer' %}Saisir les informations du nouvel enseignant
+        {% else %}Mettre à jour le dossier de {{ enseignant.nom }}
+        {% endif %}
+      </div>
+    </div>
+    <a href="{{ url_for('enseignants.liste') }}" class="btn btn-retour">← Retour à la liste</a>
+  </div>
+
+  <div class="carte-formulaire">
+    <div class="carte-entete">
+      <span class="carte-entete-titre">
+        {% if mode == 'creer' %}Nouveau dossier enseignant{% else %}Modification du dossier{% endif %}
+      </span>
+    </div>
+    <div class="corps-formulaire">
+      <form method="POST" action="
+        {% if mode == 'creer' %}{{ url_for('enseignants.creer') }}
+        {% else %}{{ url_for('enseignants.modifier', identifiant=enseignant.id) }}
+        {% endif %}">
+
+        <div class="groupe-champ">
+          <label for="nom">Nom complet</label>
+          <input type="text" id="nom" name="nom"
+                 placeholder="Ex : Dr. Aminata Sow"
+                 value="{{ enseignant.nom if enseignant else '' }}"
+                 required>
+        </div>
+
+        <div class="groupe-champ">
+          <label for="email">Adresse e-mail</label>
+          <input type="email" id="email" name="email"
+                 placeholder="Ex : aminata.sow@edu.sn"
+                 value="{{ enseignant.email if enseignant else '' }}"
+                 required>
+        </div>
+
+        <div class="groupe-champ">
+          <label for="specialite">Spécialité</label>
+          <input type="text" id="specialite" name="specialite"
+                 placeholder="Ex : Mathématiques, Informatique, Physique..."
+                 value="{{ enseignant.specialite if enseignant else '' }}"
+                 required>
+        </div>
+
+        <div class="actions-formulaire">
+          <button type="submit" class="btn btn-principal">
+            {% if mode == 'creer' %}✓ Enregistrer l'enseignant{% else %}✓ Sauvegarder les modifications{% endif %}
+          </button>
+          <a href="{{ url_for('enseignants.liste') }}" class="btn btn-retour">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

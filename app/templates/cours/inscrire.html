@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block titre %}Inscrire un étudiant — Edu.CRM{% endblock %}
+
+{% block contenu %}
+<div class="conteneur">
+  <div class="entete-page">
+    <div>
+      <span class="etiquette-section">Inscription au cours</span>
+      <h1><span class="icone-titre">📝</span> Inscrire un étudiant</h1>
+      <div class="sous-titre">Cours : <strong>{{ cours.titre }}</strong></div>
+    </div>
+    <a href="{{ url_for('cours.details', identifiant=cours.id) }}" class="btn btn-retour">← Retour aux détails</a>
+  </div>
+
+  <div class="carte-formulaire">
+    <div class="carte-entete">
+      <span class="carte-entete-titre">Sélection de l'étudiant</span>
+    </div>
+    <div class="corps-formulaire">
+
+      {% if not etudiants %}
+        <div class="message-flash attention">
+          ⚠ Aucun étudiant disponible.
+          <a href="{{ url_for('etudiants.creer') }}"
+             style="color:var(--vert-moyen); font-weight:600;">
+            Ajoutez-en un d'abord →
+          </a>
+        </div>
+      {% else %}
+        <form method="POST"
+              action="{{ url_for('cours.inscrire', identifiant_cours=cours.id) }}">
+
+          <div class="groupe-champ">
+            <label for="identifiant_etudiant">Étudiant à inscrire</label>
+            <select id="identifiant_etudiant" name="identifiant_etudiant" required>
+              <option value="">— Sélectionner un étudiant —</option>
+              {% for etudiant in etudiants %}
+                <option value="{{ etudiant.id }}">
+                  {{ etudiant.nom }} — {{ etudiant.email }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="actions-formulaire">
+            <button type="submit" class="btn btn-or">✓ Inscrire au cours</button>
+            <a href="{{ url_for('cours.details', identifiant=cours.id) }}"
+               class="btn btn-retour">Annuler</a>
+          </div>
+        </form>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

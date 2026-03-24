@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block titre %}
+  {% if mode == 'creer' %}Créer un cours{% else %}Modifier le cours{% endif %} — Edu.CRM
+{% endblock %}
+
+{% block contenu %}
+<div class="conteneur">
+  <div class="entete-page">
+    <div>
+      <h1>
+        <span class="icone-titre">{% if mode == 'creer' %}➕{% else %}✏{% endif %}</span>
+        {% if mode == 'creer' %}Créer un cours{% else %}Modifier le cours{% endif %}
+      </h1>
+      <div class="sous-titre">
+        {% if mode == 'creer' %}Définir les informations du nouveau cours
+        {% else %}Mettre à jour les informations du cours « {{ cours.titre }} »
+        {% endif %}
+      </div>
+    </div>
+    <a href="{{ url_for('cours.liste') }}" class="btn btn-retour">← Retour à la liste</a>
+  </div>
+
+  <div class="carte-formulaire">
+    <div class="carte-entete">
+      <span class="carte-entete-titre">
+        {% if mode == 'creer' %}Nouveau cours{% else %}Modification du cours{% endif %}
+      </span>
+    </div>
+    <div class="corps-formulaire">
+
+      {% if not enseignants %}
+        <div class="message-flash attention" style="margin-bottom:1.25rem;">
+          ⚠ Aucun enseignant disponible.
+          <a href="{{ url_for('enseignants.creer') }}"
+             style="color:var(--vert-moyen); font-weight:600;">
+            Ajoutez-en un d'abord →
+          </a>
+        </div>
+      {% endif %}
+
+      <form method="POST" action="
+        {% if mode == 'creer' %}{{ url_for('cours.creer') }}
+        {% else %}{{ url_for('cours.modifier', identifiant=cours.id) }}
+        {% endif %}">
+
+        <div class="groupe-champ">
+          <label for="titre">Titre du cours</label>
+          <input type="text" id="titre" name="titre"
+                 placeholder="Ex : Algorithmique et structures de données"
+                 value="{{ cours.titre if cours else '' }}"
+                 required>
+        </div>
+
+        <div class="groupe-champ">
+          <label for="identifiant_enseignant">Enseignant responsable</label>
+          <select id="identifiant_enseignant" name="identifiant_enseignant"
+                  required {% if not enseignants %}disabled{% endif %}>
+            <option value="">— Sélectionner un enseignant —</option>
+            {% for enseignant in enseignants %}
+              <option value="{{ enseignant.id }}"
+                {% if cours and cours.identifiant_enseignant == enseignant.id %}selected{% endif %}>
+                {{ enseignant.nom }} — {{ enseignant.specialite }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="actions-formulaire">
+          <button type="submit" class="btn btn-principal"
+                  {% if not enseignants %}disabled{% endif %}>
+            {% if mode == 'creer' %}✓ Créer le cours{% else %}✓ Sauvegarder{% endif %}
+          </button>
+          <a href="{{ url_for('cours.liste') }}" class="btn btn-retour">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
