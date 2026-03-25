@@ -12,20 +12,17 @@ def index():
     tous_les_etudiants   = service_etudiants.obtenir_tous_les_etudiants()
     tous_les_enseignants = service_enseignants.obtenir_tous_les_enseignants()
 
-    # ── Statistiques avancées ──────────────────────────────────────────────
     statistiques = {
         'nombre_etudiants':   len(tous_les_etudiants),
         'nombre_enseignants': len(tous_les_enseignants),
         'nombre_cours':       len(tous_les_cours),
     }
 
-    # Cours le plus populaire
     cours_populaire_brut = service_cours.cours_le_plus_populaire()
     cours_populaire = None
     if cours_populaire_brut:
         cours_populaire = service_cours.obtenir_details_cours(cours_populaire_brut['id'])
 
-    # Enseignant avec le plus de cours
     enseignant_actif = None
     if tous_les_enseignants and tous_les_cours:
         compteur = {}
@@ -41,7 +38,6 @@ def index():
                     'nombre_cours': compteur[id_enseignant_actif]
                 }
 
-    # Nombre d'étudiants par cours (pour le graphique)
     donnees_graphique = [
         {
             'titre':          c['titre'],

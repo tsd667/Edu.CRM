@@ -7,7 +7,6 @@ def creer_application():
     application = Flask(__name__)
     application.config.from_object(Configuration)
 
-    # --- Enregistrement des blueprints ---
     from app.auth.routes import bp_auth
     from app.etudiants.routes import bp_etudiants
     from app.enseignants.routes import bp_enseignants
